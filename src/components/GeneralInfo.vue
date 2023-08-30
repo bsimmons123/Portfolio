@@ -28,14 +28,13 @@ export default {
 </script>
 
 <style>
-/* Center and style the landing content */
 .landing-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh; /* Make the container span the entire viewport height */
-  color: black; /* Text color */
+  height: 90vh; /* Make the container span the entire viewport height */
+  color: white;
 }
 
 .landing-container h1 {
@@ -45,7 +44,7 @@ export default {
 
 .tilt-button {
   padding: 10px 20px;
-  border: 2px solid black; /* Blue border */
+  border: 2px solid white;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
@@ -57,6 +56,6 @@ export default {
 }
 
 .tilt-button:hover {
-  background-color: #E24250; /* Darker blue on hover */
+  background-color: #007bff;
 }
 </style>

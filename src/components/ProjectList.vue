@@ -1,7 +1,8 @@
 <template>
   <section id="projects">
     <div class="container">
-        <h2>Projects</h2>
+        <h2 style="color: white">Projects</h2>
+        <br>
           <div v-for="project in projects()" :key="project.title">
             <project-view
                 :project="project"
