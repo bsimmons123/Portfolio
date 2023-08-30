@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+.fleet
+package-lock.json
 
 
 # local env files

@@ -1,5 +1,5 @@
-# simmonsfolio
-
+# My Portfolio
+![](https://erguotou520.github.io/vue-version-badge/vue2.x.svg)
 ## Project setup
 ```
 npm install
@@ -14,11 +14,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
