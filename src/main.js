@@ -1,9 +1,10 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import BootstrapVue3 from 'bootstrap-vue-3'
+import router from './router'
 
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -11,13 +12,11 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 library.add(fab, fas);
-Vue.component('font-awesome-icon', FontAwesomeIcon)
 
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
+const app = createApp(App)
 
-Vue.config.productionTip = false
+app.component('font-awesome-icon', FontAwesomeIcon)
+app.use(BootstrapVue3)
+app.use(router)
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+app.mount('#app')

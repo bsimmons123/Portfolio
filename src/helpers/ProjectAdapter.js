@@ -1,11 +1,11 @@
 class ProjectAdapter {
-    constructor(adapter) {
-        this.title = adapter.title;
-        this.description = adapter.description;
-        this.canView = adapter.canView;
-        this.githubLink = adapter.githubLink;
-        this.image = adapter.image;
-        this.viewLink = adapter.viewLink;
+    constructor(title, description, canView, githubLink, image, viewLink) {
+        this.title = title;
+        this.description = description;
+        this.canView = canView;
+        this.githubLink = githubLink;
+        this.image = image;
+        this.viewLink = viewLink;
     }
 }
 

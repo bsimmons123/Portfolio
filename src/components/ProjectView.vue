@@ -1,69 +1,48 @@
 <template>
-  <div class="row">
-    <b-jumbotron text-variant="black" bg-variant="secondary" class="rounded-4 landing-container">
-      <div class="col-lg-4 col-sm-12">
-        <div>
-          <h3><strong>{{ project.title }}</strong></h3>
-          <div>
-            <div class="mb-4" v-html="project.description"></div>
-          </div>
-          <a
-              rel="noreferrer"
-              target="_blank"
-              style="padding-right: 5px; color: #000000; text-decoration: none;"
-              :href="project.viewLink"
-          >
-            <template v-if="project.viewLink">
-              <font-awesome-icon
-                  size="3x"
-                  :icon="['fas', 'eye']"
-                  class="clickable"
-              />
-            </template>
-            <template v-else>
-              <font-awesome-icon
-                  size="3x"
-                  :icon="['fas', 'eye']"
-                  class="disable-clickable"
-                  v-b-tooltip="'Unavailable to view'"
-              />
-            </template>
-          </a>
-
-          <a
-              rel="noreferrer"
-              target="_blank"
-              :href="project.githubLink"
-              style="color: #000000; text-decoration: none;"
-          >
-            <font-awesome-icon
-                size="3x"
-                :icon="['fab', 'github']"
-                class="clickable"
-            />
-          </a>
-        </div>
+  <div class="project-card">
+    <div class="project-image-container">
+      <img
+        alt="Project Image"
+        class="project-image"
+        :src="require('@/assets/' + project.image)"
+        data-tilt
+        data-tilt-max="4"
+        data-tilt-glare="true"
+        data-tilt-max-glare="0.5"
+      />
+    </div>
+    <div class="project-content">
+      <h3 class="project-title">{{ project.title }}</h3>
+      <div class="project-description" v-html="getShortDescription()"></div>
+      <div class="project-links">
+        <a
+          v-if="project.viewLink"
+          rel="noreferrer"
+          target="_blank"
+          :href="project.viewLink"
+          class="project-link"
+        >
+          <font-awesome-icon :icon="['fas', 'eye']" />
+          <span>View</span>
+        </a>
+        <span 
+          v-else
+          class="project-link disabled"
+        >
+          <font-awesome-icon :icon="['fas', 'eye']" />
+          <span>View</span>
+        </span>
+        <a
+          rel="noreferrer"
+          target="_blank"
+          :href="project.githubLink"
+          class="project-link"
+        >
+          <font-awesome-icon :icon="['fab', 'github']" />
+          <span>Code</span>
+        </a>
       </div>
-      <div class="col-lg-8 col-sm-12">
-        <div>
-          <div
-              data-tilt
-              data-tilt-max="4"
-              data-tilt-glare="true"
-              data-tilt-max-glare="0.5"
-              class="js-tilt"
-          >
-            <br>
-            <img
-                alt="Project Image"
-                class="img-fluid"
-                style="width: 75%; height: auto;"
-                :src="require('@/assets/' + project.image)"
-            />
-          </div>
-        </div>
-      </div>
-    </b-jumbotron>
+    </div>
   </div>
 </template>
 
@@ -79,6 +58,14 @@ export default {
       type: ProjectAdapter
     }
   },
+  methods: {
+    getShortDescription() {
+      // Extract the first sentence or first 150 characters
+      const fullDesc = this.project.description;
+      const firstSentence = fullDesc.split('.')[0] + '.';
+      return firstSentence.length < 150 ? firstSentence : fullDesc.substring(0, 150) + '...';
+    }
+  },
   mounted() {
     initTiltAnimation()
   }
@@ -86,20 +73,86 @@ export default {
 </script>
 
 <style scoped>
-.clickable {
-  cursor: pointer;
+.project-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.project-image-container {
+  overflow: hidden;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.project-card:hover .project-image {
+  transform: scale(1.05);
+}
+
+.project-content {
+  padding: 1.5rem;
+}
+
+.project-title {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.project-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.project-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.clickable:hover {
-  transform: scale(1.05);
+.project-link:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  color: #333;
+  text-decoration: none;
 }
 
-.disable-clickable {
-  opacity: 0.6; /* Adjust the opacity to your preference */
-}
-
-.disable-clickable:hover {
-  transform: scale(1.05);
+.project-link.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

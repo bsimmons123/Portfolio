@@ -1,183 +1,236 @@
 <template>
-  <div class="navigation">
-    <ul>
-      <li class="list" :class="{ active: activeIndex === 0 }" @click="setActiveIndex(0)">
-        <a href="#">
-          <span class="icon"><font-awesome-icon :icon="['fas', 'house']" /></span>
-          <span class="text">General</span>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="logo">
+        <font-awesome-icon :icon="['fas', 'code']" />
+        <span>Portfolio</span>
+      </div>
+      <div class="nav-links" :class="{ 'active': mobileMenuOpen }">
+        <div class="nav-item" :class="{ 'active': activeIndex === 0 }" @click="setActiveIndex(0)">
+          <router-link to="/">
+            <font-awesome-icon :icon="['fas', 'house']" />
+            <span>Home</span>
+          </router-link>
+        </div>
+        <div class="nav-item" :class="{ 'active': activeIndex === 2 }" @click="setActiveIndex(2)">
+          <router-link to="/projects">
+            <font-awesome-icon :icon="['fas', 'bars-progress']" />
+            <span>Projects</span>
+          </router-link>
+        </div>
+        <div class="nav-item" :class="{ 'active': activeIndex === 4 }" @click="setActiveIndex(4)">
+          <router-link to="/contact-me">
+            <font-awesome-icon :icon="['fas', 'envelope']" />
+            <span>Contact</span>
+          </router-link>
+        </div>
+      </div>
+      <div class="social-icons">
+        <a href="https://github.com/bsimmons123" target="_blank" class="social-icon">
+          <font-awesome-icon :icon="['fab', 'github']" />
         </a>
-      </li>
-      <li class="list" :class="{ active: activeIndex === 1 }" @click="setActiveIndex(1)">
-        <a href="#about">
-          <span class="icon"><font-awesome-icon :icon="['fas', 'user']" /></span>
-          <span class="text">About</span>
+        <a href="https://www.linkedin.com/in/brandon-simmons-145b88223/" target="_blank" class="social-icon">
+          <font-awesome-icon :icon="['fab', 'linkedin']" />
         </a>
-      </li>
-      <li class="list" :class="{ active: activeIndex === 2 }" @click="setActiveIndex(2)">
-        <a href="#projects">
-          <span class="icon"><font-awesome-icon :icon="['fas', 'bars-progress']" /></span>
-          <span class="text">Projects</span>
+        <a href="mailto:bs@brandon-simmons.work" class="social-icon">
+          <font-awesome-icon :icon="['fas', 'envelope']" />
         </a>
-      </li>
-      <li class="list" :class="{ active: activeIndex === 3 }" @click="setActiveIndex(3)">
-        <a href="#">
-          <span class="icon"><font-awesome-icon :icon="['fas', 'image']" /></span>
-          <span class="text">Photos</span>
-        </a>
-      </li>
-      <li class="list" :class="{ active: activeIndex === 4 }" @click="setActiveIndex(4)">
-        <a href="#">
-          <span class="icon"><font-awesome-icon :icon="['fas', 'sliders']" /></span>
-          <span class="text">Settings</span>
-        </a>
-      </li>
-      <div class="indicator"/>
-    </ul>
-  </div>
+      </div>
+      <div class="mobile-toggle" @click="toggleMobileMenu">
+        <font-awesome-icon :icon="['fas', mobileMenuOpen ? 'xmark' : 'bars']" />
+      </div>
+    </div>
+  </nav>
 </template>
 
-<script>
-export default {
-  name: 'NavBar',
-  data() {
-    return {
-      activeIndex: 0
-    }
-  },
-  methods: {
-    setActiveIndex(index) {
-      this.activeIndex = index;
-    }
-  }
+<script setup>
+import { ref } from 'vue'
+
+const activeIndex = ref(0)
+const mobileMenuOpen = ref(false)
+
+const setActiveIndex = (index) => {
+  activeIndex.value = index
+  mobileMenuOpen.value = false
+}
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
 }
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css?family=Poppins:100:200:300:400:500:600:700:800:900");
+@import url("https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Popins, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
+
 :root {
-  --clr: #222327
+  --primary-color: #00a8cc;
+  --text-color: #ffffff;
+  --bg-color: rgba(0, 128, 128, 0.8);
+  --hover-color: #00c2c2;
+  --transition-speed: 0.3s;
 }
 
-.navigation {
-  float: inherit;
-  position: relative;
-  width: 400px;
-  height: 70px;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-}
-
-.navigation ul {
-  display: flex;
-  width: 350px;
-}
-
-.navigation ul li {
-  position: relative;
-  list-style: none;
-  width: 70px;
-  height: 70px;
-  z-index: 1;
-}
-
-.navigation ul li a {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.navbar {
   width: 100%;
-  text-align: center;
-  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  background-color: var(--bg-color);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed) ease;
 }
 
-.navigation ul li a .icon {
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  padding-right: inherit;
+}
+
+.logo svg {
+  margin-right: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-item {
   position: relative;
-  display: block;
-  line-height: 75px;
-  font-size: 1.5em;
-  text-align: center;
-  transition: 0.5s;
-  color: #222327;
 }
 
-.navigation ul li.active a .icon {
-  transform: translateY(-35px);
+.nav-item a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-speed) ease;
 }
 
-.navigation ul li a .text {
-  position: absolute;
-  color: #222327;
-  font-weight: 400;
-  font-size: 0.75em;
-  letter-spacing: 0.05em;
-  transition: 0.5s;
-  opacity: 0;
-  transform: translateY(20px);
+.nav-item a:hover {
+  color: var(--primary-color);
 }
 
-.navigation ul li.active a .text {
-  opacity: 1;
-  transform: translateY(10px);
+.nav-item.active a {
+  color: var(--primary-color);
 }
 
-.indicator {
-  position: absolute;
-  top: -50%;
-  width: 70px;
-  height: 70px;
-  background: #007bff;
-  border-radius: 50%;
-  border: 6px solid #222327;
-  transition: .5s;
-}
-
-.indicator::before {
+.nav-item.active::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: -22px;
-  width: 20px;
-  height: 20px;
-  background: transparent;
-  border-top-right-radius: 20px;
-  box-shadow: 0 -10px 0 0 #222327;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  transform: scaleX(1);
+  transition: transform var(--transition-speed) ease;
 }
 
-.indicator::after {
+.nav-item::after {
   content: '';
   position: absolute;
-  top: 50%;
-  right: -22px;
-  width: 20px;
-  height: 20px;
-  background: transparent;
-  border-top-left-radius: 20px;
-  box-shadow: 0 -10px 0 0 #222327;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  transform: scaleX(0);
+  transition: transform var(--transition-speed) ease;
 }
 
-.navigation ul li:nth-child(1).active ~ .indicator {
-  transform: translateX(calc(70px * 0));
+.nav-item:hover::after {
+  transform: scaleX(1);
 }
-.navigation ul li:nth-child(2).active ~ .indicator {
-  transform: translateX(calc(70px * 1));
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  padding-left: inherit;
 }
-.navigation ul li:nth-child(3).active ~ .indicator {
-  transform: translateX(calc(70px * 2));
+
+.social-icon {
+  color: var(--text-color);
+  font-size: 1.2rem;
+  transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
-.navigation ul li:nth-child(4).active ~ .indicator {
-  transform: translateX(calc(70px * 3));
+
+.social-icon:hover {
+  color: var(--primary-color);
+  transform: translateY(-3px);
 }
-.navigation ul li:nth-child(5).active ~ .indicator {
-  transform: translateX(calc(70px * 4));
+
+.mobile-toggle {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 1rem;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-150%);
+    transition: transform var(--transition-speed) ease;
+    z-index: 999;
+  }
+
+  .nav-links.active {
+    transform: translateY(0);
+  }
+
+  .nav-item {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-item a {
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .social-icons {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: block;
+  }
 }
 </style>
