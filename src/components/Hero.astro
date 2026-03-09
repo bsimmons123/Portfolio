@@ -1,0 +1,92 @@
+---
+---
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <span class="hero-label mono">SOFTWARE DEVELOPER</span>
+    <hr class="hero-rule" />
+    <h1>Brandon<br />Simmons.</h1>
+    <p class="hero-desc muted">
+      I build fast, thoughtful web applications — from pixel-perfect interfaces
+      to resilient backend systems.
+    </p>
+    <div class="hero-ctas">
+      <button id="hero-spotlight-btn" class="btn-primary">Explore Work</button>
+      <a href="/resume.pdf" target="_blank" class="btn-secondary">Download Resume</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('hero-spotlight-btn')?.addEventListener('click', () => {
+    (window as any).openSpotlight?.();
+  });
+</script>
+
+<style>
+  .hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+  }
+  .hero-inner {
+    margin-left: 8vw;
+    max-width: 640px;
+  }
+  .hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  .hero-rule {
+    width: 40px;
+    border: none;
+    border-top: 2px solid var(--amber);
+    margin: 1rem 0;
+  }
+  h1 {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+  .hero-desc {
+    font-size: 1.1rem;
+    max-width: 480px;
+    margin-bottom: 2rem;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: opacity var(--transition);
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    display: inline-block;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: border-color var(--transition), color var(--transition);
+  }
+  .btn-secondary:hover {
+    border-color: var(--amber);
+    color: var(--text);
+    text-decoration: none;
+  }
+</style>

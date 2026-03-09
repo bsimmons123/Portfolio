@@ -1,0 +1,75 @@
+---
+import type { GitHubRepo } from '../lib/github';
+import Spotlight from './Spotlight.astro';
+
+export interface Props {
+  repos: GitHubRepo[];
+}
+const { repos } = Astro.props;
+---
+<section id="projects">
+  <div class="container">
+    <h2>Projects.</h2>
+    <p class="section-desc muted">
+      Open-source work and side projects. Browse them all below.
+    </p>
+    <button id="spotlight-trigger" class="spotlight-btn">
+      <span class="prompt-prefix mono amber">$</span>
+      <span>browse projects</span>
+      <kbd>⌘K</kbd>
+    </button>
+    <p class="repo-count muted mono">
+      {repos.length} repositories indexed
+    </p>
+  </div>
+</section>
+
+<Spotlight repos={repos} />
+
+<script>
+  document.getElementById('spotlight-trigger')?.addEventListener('click', () => {
+    (window as any).openSpotlight?.();
+  });
+</script>
+
+<style>
+  .section-desc {
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin-bottom: 2rem;
+  }
+  .spotlight-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .spotlight-btn:hover {
+    border-color: var(--amber);
+    background: var(--amber-dim);
+    color: var(--text);
+  }
+  .prompt-prefix { font-size: 1rem; }
+  kbd {
+    margin-left: auto;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-faint);
+  }
+  .repo-count {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+</style>

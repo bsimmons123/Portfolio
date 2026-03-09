@@ -1,0 +1,167 @@
+---
+---
+<section id="contact">
+  <div class="container">
+    <h2>Contact.</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p class="muted">
+          Interested in working together or just want to say hi?
+          Reach out through any of these channels.
+        </p>
+        <ul class="contact-links">
+          <li>
+            <span class="link-label mono muted">email</span>
+            <a href="mailto:bsimmons0323@gmail.com">bsimmons0323@gmail.com</a>
+          </li>
+          <li>
+            <span class="link-label mono muted">github</span>
+            <a href="https://github.com/bsimmons123" target="_blank" rel="noopener">github.com/bsimmons123</a>
+          </li>
+          <li>
+            <span class="link-label mono muted">linkedin</span>
+            <a href="https://linkedin.com/in/brandon-simmons-145b88223" target="_blank" rel="noopener">brandon-simmons</a>
+          </li>
+        </ul>
+      </div>
+      <form id="contact-form" class="contact-form" action="https://formspree.io/f/xgegarqo" method="POST">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+        <p id="form-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status')!;
+  const btn = form.querySelector<HTMLButtonElement>('.submit-btn')!;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    status.textContent = '';
+    status.className = '';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' },
+      });
+      if (res.ok) {
+        status.textContent = 'Message sent! I\'ll get back to you soon.';
+        status.className = 'status-success';
+        form.reset();
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      status.textContent = 'Something went wrong. Please email me directly.';
+      status.className = 'status-error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+  });
+</script>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .contact-info .muted {
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+  }
+  .contact-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .contact-links li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .link-label { font-size: 0.75rem; letter-spacing: 0.05em; }
+  .contact-links a {
+    color: var(--text);
+    font-size: 0.95rem;
+    transition: color var(--transition);
+  }
+  .contact-links a:hover { color: var(--amber); text-decoration: none; }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  input, textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    padding: 0.65rem 0.875rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    resize: vertical;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--amber);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+  }
+  .submit-btn {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: opacity var(--transition);
+  }
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #form-status {
+    font-size: 0.875rem;
+    min-height: 1.25rem;
+  }
+  .status-success { color: #4ade80; }
+  .status-error { color: #f87171; }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+</style>

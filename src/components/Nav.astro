@@ -1,0 +1,99 @@
+---
+---
+<nav class="nav" id="nav">
+  <div class="nav-inner container">
+    <a href="/" class="nav-logo mono">bs.</a>
+    <details class="nav-mobile">
+      <summary class="nav-toggle">Menu</summary>
+      <div class="nav-dropdown">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a href="https://github.com/bsimmons123" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/brandon-simmons-145b88223" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </details>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <span class="nav-divider"></span>
+      <a href="https://github.com/bsimmons123" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/brandon-simmons-145b88223" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const nav = document.getElementById('nav')!;
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: background var(--transition), border-color var(--transition);
+  }
+  .nav.scrolled {
+    background: rgba(10, 10, 11, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo:hover { text-decoration: none; color: var(--amber); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .nav-links a {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: color var(--transition);
+  }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+  .nav-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+  }
+  .nav-mobile { display: none; }
+  summary { list-style: none; cursor: pointer; color: var(--text-muted); }
+  summary::-webkit-details-marker { display: none; }
+  .nav-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .nav-dropdown a { color: var(--text-muted); padding: 0.25rem 0.5rem; font-size: 0.9rem; }
+  .nav-dropdown a:hover { color: var(--text); text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-mobile { display: block; position: relative; }
+  }
+</style>

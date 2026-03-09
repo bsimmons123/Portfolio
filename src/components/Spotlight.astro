@@ -1,0 +1,380 @@
+---
+import type { GitHubRepo } from '../lib/github';
+
+export interface Props {
+  repos: GitHubRepo[];
+}
+const { repos } = Astro.props;
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric'
+  });
+}
+---
+
+<div id="spotlight-overlay" hidden aria-modal="true" role="dialog" aria-label="Project browser">
+  <div class="spotlight-shell" id="spotlight-shell">
+    <div class="spotlight-search">
+      <span class="search-prefix mono amber">/</span>
+      <input
+        id="spotlight-input"
+        type="text"
+        placeholder="Search projects..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="esc-hint">ESC</kbd>
+    </div>
+    <div class="spotlight-body">
+      <ul class="spotlight-list" id="spotlight-list" role="listbox">
+        {repos.map((repo, i) => (
+          <li
+            class="spotlight-item"
+            role="option"
+            tabindex="-1"
+            data-index={i}
+            data-name={repo.name}
+            data-description={repo.description ?? ''}
+            data-url={repo.html_url}
+            data-homepage={repo.homepage ?? ''}
+            data-stars={repo.stargazers_count}
+            data-language={repo.language ?? ''}
+            data-pushed={repo.pushed_at}
+            data-topics={repo.topics.join(',')}
+          >
+            <span class="item-name">{repo.name}</span>
+            <span class="item-lang muted mono">{repo.language}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="spotlight-detail" id="spotlight-detail">
+        <p class="detail-placeholder muted">Select a project to see details</p>
+      </div>
+    </div>
+    <div class="spotlight-footer mono">
+      <span>↑↓ navigate</span>
+      <span>↵ open</span>
+      <span>ESC close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('spotlight-overlay')!;
+  const shell = document.getElementById('spotlight-shell')!;
+  const input = document.getElementById('spotlight-input') as HTMLInputElement;
+  const list = document.getElementById('spotlight-list')!;
+  const detail = document.getElementById('spotlight-detail')!;
+
+  const allItems = Array.from(list.querySelectorAll<HTMLElement>('.spotlight-item'));
+  let filtered: HTMLElement[] = [...allItems];
+  let activeIndex = 0;
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  function openSpotlight() {
+    overlay.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      overlay.classList.add('is-open');
+    });
+    document.body.style.overflow = 'hidden';
+    input.focus();
+    renderDetail();
+  }
+
+  function closeSpotlight() {
+    overlay.classList.remove('is-open');
+    overlay.addEventListener('transitionend', () => {
+      overlay.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+      input.value = '';
+      filterRepos('');
+    }, { once: true });
+  }
+
+  function filterRepos(query: string) {
+    const q = query.toLowerCase().trim();
+    filtered = [];
+    allItems.forEach(item => {
+      const name = item.dataset.name!.toLowerCase();
+      const desc = item.dataset.description!.toLowerCase();
+      const lang = item.dataset.language!.toLowerCase();
+      const topics = item.dataset.topics!.toLowerCase();
+      const matches = !q || name.includes(q) || desc.includes(q) || lang.includes(q) || topics.includes(q);
+      item.style.display = matches ? '' : 'none';
+      if (matches) filtered.push(item);
+    });
+    activeIndex = 0;
+    highlightActive();
+    renderDetail();
+  }
+
+  function highlightActive() {
+    allItems.forEach(item => item.classList.remove('is-active'));
+    if (filtered[activeIndex]) {
+      filtered[activeIndex].classList.add('is-active');
+      filtered[activeIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function renderDetail() {
+    const item = filtered[activeIndex];
+    if (!item) {
+      detail.innerHTML = '<p class="detail-placeholder muted">No projects found</p>';
+      return;
+    }
+    const name = item.dataset.name!;
+    const desc = item.dataset.description!;
+    const url = item.dataset.url!;
+    const homepage = item.dataset.homepage!;
+    const stars = item.dataset.stars!;
+    const lang = item.dataset.language!;
+    const pushed = formatDate(item.dataset.pushed!);
+    const topics = item.dataset.topics ? item.dataset.topics.split(',').filter(Boolean) : [];
+
+    const topicsHtml = topics.length
+      ? `<div class="detail-topics">${topics.map(t => `<span class="topic">${t}</span>`).join('')}</div>`
+      : '';
+
+    const homepageHtml = homepage
+      ? `<a href="${homepage}" target="_blank" rel="noopener" class="detail-link">Live Site →</a>`
+      : '';
+
+    detail.innerHTML = `
+      <h3 class="detail-name">${name}</h3>
+      ${desc ? `<p class="detail-desc muted">${desc}</p>` : ''}
+      <div class="detail-meta mono">
+        ${lang ? `<span class="meta-lang">${lang}</span>` : ''}
+        <span class="meta-stars">★ ${stars}</span>
+        <span class="meta-date muted">pushed ${pushed}</span>
+      </div>
+      ${topicsHtml}
+      <div class="detail-actions">
+        <a href="${url}" target="_blank" rel="noopener" class="detail-link primary">GitHub →</a>
+        ${homepageHtml}
+      </div>
+    `;
+  }
+
+  // Expose globally for hero button
+  (window as any).openSpotlight = openSpotlight;
+
+  // Keyboard: Cmd+K / Ctrl+K
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (overlay.hasAttribute('hidden')) openSpotlight();
+      else closeSpotlight();
+    }
+  });
+
+  // Overlay keyboard navigation
+  overlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeSpotlight(); return; }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, filtered.length - 1);
+      highlightActive(); renderDetail();
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, 0);
+      highlightActive(); renderDetail();
+    }
+    if (e.key === 'Enter') {
+      const item = filtered[activeIndex];
+      if (item?.dataset.url) window.open(item.dataset.url, '_blank');
+    }
+  });
+
+  // Backdrop click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeSpotlight();
+  });
+
+  // Input filter
+  input.addEventListener('input', () => filterRepos(input.value));
+
+  // List click
+  list.addEventListener('click', (e) => {
+    const item = (e.target as HTMLElement).closest<HTMLElement>('.spotlight-item');
+    if (!item) return;
+    const idx = filtered.indexOf(item);
+    if (idx === -1) return;
+    activeIndex = idx;
+    highlightActive(); renderDetail();
+  });
+
+  list.addEventListener('dblclick', (e) => {
+    const item = (e.target as HTMLElement).closest<HTMLElement>('.spotlight-item');
+    if (item?.dataset.url) window.open(item.dataset.url, '_blank');
+  });
+</script>
+
+<style>
+  #spotlight-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  #spotlight-overlay[hidden] { display: none; }
+  #spotlight-overlay.is-open { opacity: 1; }
+
+  .spotlight-shell {
+    width: min(760px, 92vw);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transform: translateY(-16px);
+    transition: transform 200ms ease;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+  #spotlight-overlay.is-open .spotlight-shell {
+    transform: translateY(0);
+  }
+
+  .spotlight-search {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-prefix { font-size: 1.1rem; }
+  #spotlight-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    outline: none;
+  }
+  #spotlight-input::placeholder { color: var(--text-faint); }
+  .esc-hint {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+  }
+
+  .spotlight-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 380px;
+  }
+
+  .spotlight-list {
+    list-style: none;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .spotlight-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: background var(--transition);
+    gap: 0.5rem;
+  }
+  .spotlight-item:hover { background: var(--surface-2); }
+  .spotlight-item.is-active { background: var(--amber-dim); }
+  .item-name {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
+  .item-lang {
+    font-size: 0.7rem;
+    flex-shrink: 0;
+    color: var(--text-faint);
+  }
+
+  .spotlight-detail {
+    padding: 1.25rem;
+    overflow-y: auto;
+  }
+  .detail-placeholder { font-size: 0.9rem; }
+  .detail-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .detail-desc {
+    font-size: 0.9rem;
+    margin-bottom: 0.875rem;
+    line-height: 1.5;
+  }
+  .detail-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.875rem;
+    flex-wrap: wrap;
+  }
+  .meta-lang { color: var(--amber); }
+  .meta-stars { color: var(--text-muted); }
+  .meta-date { color: var(--text-faint); }
+  .detail-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .topic {
+    background: var(--amber-dim);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 100px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.72rem;
+    color: var(--amber);
+  }
+  .detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .detail-link {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.875rem;
+    border-radius: var(--radius);
+    transition: border-color var(--transition), color var(--transition);
+  }
+  .detail-link:hover { border-color: var(--amber); color: var(--amber); text-decoration: none; }
+  .detail-link.primary { border-color: var(--amber); color: var(--amber); }
+  .detail-link.primary:hover { background: var(--amber); color: #000; }
+
+  .spotlight-footer {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.6rem 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+</style>

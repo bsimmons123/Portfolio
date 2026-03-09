@@ -1,0 +1,142 @@
+---
+---
+<section id="about">
+  <div class="container">
+    <h2>About.</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm Brandon Simmons, a software developer based in the US. I love the craft of
+          building things for the web — from thoughtful user interfaces to backend systems
+          that handle real-world complexity.
+        </p>
+        <p>
+          My toolkit spans modern JavaScript (Vue, React, Astro), Python, and a healthy
+          appreciation for well-designed APIs. I care about performance, accessibility,
+          and the details that make software feel intentional rather than assembled.
+        </p>
+        <p>
+          Outside of work I run a homelab — a small but growing self-hosted
+          infrastructure that keeps me close to the ops side of software.
+        </p>
+        <div class="homelab">
+          <p class="homelab-label mono">// homelab stack</p>
+          <ul class="homelab-grid">
+            <li>
+              <span class="hl-name">Proxmox</span>
+              <span class="hl-desc muted">bare-metal hypervisor, multiple VMs &amp; LXC containers</span>
+            </li>
+            <li>
+              <span class="hl-name">Docker / k8s</span>
+              <span class="hl-desc muted">containerised services, experimenting with k3s clusters</span>
+            </li>
+            <li>
+              <span class="hl-name">Pi-hole</span>
+              <span class="hl-desc muted">network-wide DNS ad-blocking across the LAN</span>
+            </li>
+            <li>
+              <span class="hl-name">Self-hosted apps</span>
+              <span class="hl-desc muted">password managers, media servers, monitoring dashboards, and more</span>
+            </li>
+            <li>
+              <span class="hl-name">Raspberry Pi</span>
+              <span class="hl-desc muted">Pi 4 &amp; Pi 5 nodes running lightweight edge workloads</span>
+            </li>
+            <li>
+              <span class="hl-name">Home Server</span>
+              <span class="hl-desc muted">dedicated machine for storage, monitoring, and experimentation</span>
+            </li>
+          </ul>
+        </div>
+        <a href="/resume.pdf" target="_blank" class="resume-link">
+          View Resume →
+        </a>
+      </div>
+      <div class="about-photo">
+        <img src="/profile.jpg" alt="Brandon Simmons" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 60fr 40fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .about-text p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+  .homelab {
+    margin: 1.5rem 0 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+  }
+  .homelab-label {
+    font-size: 0.75rem;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+  .homelab-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+  }
+  .homelab-grid li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .hl-name {
+    font-family: var(--font-mono);
+    font-size: 0.825rem;
+    color: var(--text);
+  }
+  .hl-desc {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  @media (max-width: 480px) {
+    .homelab-grid { grid-template-columns: 1fr; }
+  }
+  .resume-link {
+    display: inline-block;
+    margin-top: 1rem;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background var(--transition), color var(--transition);
+  }
+  .resume-link:hover {
+    background: var(--amber);
+    color: #000;
+    text-decoration: none;
+  }
+  .about-photo img {
+    width: 100%;
+    max-width: 320px;
+    border-radius: var(--radius);
+    outline: 2px solid var(--amber);
+    outline-offset: 8px;
+    transform: rotate(-1deg);
+    margin: 0 auto;
+  }
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+    .about-photo { order: -1; }
+    .about-photo img { max-width: 240px; }
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Projects from '../components/Projects.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import { fetchPublicRepos } from '../lib/github';
+
+let repos = [];
+try {
+  repos = await fetchPublicRepos('bsimmons123');
+} catch (e) {
+  console.warn('GitHub API fetch failed:', e);
+}
+---
+<BaseLayout>
+  <Nav />
+  <main>
+    <Hero />
+    <About />
+    <Projects repos={repos} />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>
